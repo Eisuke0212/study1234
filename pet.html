@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ペット画面</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #petImage {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      transition: transform 0.5s;
+    }
+
+    .pet-animate {
+      animation: movePet 1.5s ease-in-out;
+    }
+
+    @keyframes movePet {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(30px); }
+      50% { transform: translateX(-30px); }
+      75% { transform: translateX(15px); }
+      100% { transform: translateX(0); }
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(white, transparent);
+      border-radius: 50%;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: sparkle 1s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 1; transform: scale(0.5) translateX(-50%); }
+      100% { opacity: 0; transform: scale(2) translateX(-50%); }
+    }
+
+    #toys img {
+      width: 50px;
+      height: 50px;
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🐶 ペット画面</h1>
+
+  <p>名前：<span id="petNameDisplay"></span></p>
+  <img id="petImage" src="" alt="ペット">
+  <div id="sparkle" class="sparkle" style="display:none;"></div>
+
+  <p>えさ：<span id="foodCount">0</span> 個</p>
+  <p>好感度：<span id="affection">0</span>/10</p>
+  <p>レベル：<span id="level">1</span></p>
+
+  <div>
+    <button onclick="feedPet()">えさをあげる</button>
+    <button onclick="showSettings()">設定</button>
+    <button onclick="goShop()">ペットショップへ</button>
+  </div>
+
+  <div id="toys" style="margin-top:10px;">
+    <h3>🎁 ペットのおもちゃ:</h3>
+  </div>
+
+  <div id="settings" style="display:none; margin-top:10px;">
+    <input type="text" id="petNameInput" placeholder="ペットの名前">
+    <input type="file" id="petFile" accept="image/*">
+    <button onclick="savePet()">保存</button>
+  </div>
+
+  <script>
+    const nameEl = document.getElementById('petNameDisplay');
+    const imgEl = document.getElementById('petImage');
+    const foodEl = document.getElementById('foodCount');
+    const affectionEl = document.getElementById('affection');
+    const levelEl = document.getElementById('level');
+    const sparkle = document.getElementById('sparkle');
+    const toysDiv = document.getElementById('toys');
+
+    let affection = 0;
+    let level = 1;
+
+    function loadPet() {
+      nameEl.textContent = localStorage.getItem('pet_name') || '名無しのペット';
+      const image = localStorage.getItem('pet_image');
+      if (image) imgEl.src = image;
+      foodEl.textContent = localStorage.getItem('food') || 0;
+      affection = parseInt(localStorage.getItem('affection') || 0);
+      level = parseInt(localStorage.getItem('level') || 1);
+      updateStats();
+    }
+
+    function updateStats() {
+      affectionEl.textContent = affection;
+      levelEl.textContent = level;
+
+      // 画像サイズ調整（1レベルごとに10%大きく）
+      const baseSize = 150;
+      imgEl.style.width = baseSize + (level - 1) * 15 + "px";
+      imgEl.style.height = baseSize + (level - 1) * 15 + "px";
+
+      // おもちゃ再表示
+      toysDiv.innerHTML = "<h3>🎁 ペットのおもちゃ:</h3>";
+      for (let i = 0; i < level - 1; i++) {
+        const toy = document.createElement("img");
+        toy.src = "https://cdn-icons-png.flaticon.com/128/190/190858.png"; // おもちゃ画像（自由に変更OK）
+        toy.alt = "Toy";
+        toysDiv.appendChild(toy);
+      }
+    }
+
+    function feedPet() {
+      let food = parseInt(localStorage.getItem('food') || 0);
+      if (food <= 0) {
+        alert("えさがありません！");
+        return;
+      }
+
+      food--;
+      localStorage.setItem('food', food);
+      foodEl.textContent = food;
+
+      affection++;
+      if (affection >= 10) {
+        affection = 0;
+        level++;
+        alert("🎉 レベルアップ！ペットにおもちゃが届いたよ！");
+      }
+
+      localStorage.setItem('affection', affection);
+      localStorage.setItem('level', level);
+      updateStats();
+
+      imgEl.classList.add('pet-animate');
+      sparkle.style.display = 'block';
+      setTimeout(() => {
+        imgEl.classList.remove('pet-animate');
+        sparkle.style.display = 'none';
+      }, 1500);
+    }
+
+    function showSettings() {
+      document.getElementById('settings').style.display = 'block';
+    }
+
+    function savePet() {
+      const name = document.getElementById('petNameInput').value;
+      const file = document.getElementById('petFile').files[0];
+
+      if (name) {
+        localStorage.setItem('pet_name', name);
+        nameEl.textContent = name;
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          localStorage.setItem('pet_image', reader.result);
+          imgEl.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      alert("保存しました！");
+    }
+
+    function goShop() {
+      location.href = 'shop.html';
+    }
+
+    loadPet();
+  </script>
+</body>
+</html>

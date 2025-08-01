@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>あなたの意見をください！</title>
+  <link rel="stylesheet" href="question.css">
+</head>
+<body>
+
+  <div class="form-container">
+    <h1>あなたの意見をください！</h1>
+<p style="max-width: 600px; margin: 0 auto; text-align: center;">
+  この度は当勉強ウェブサイトをご利用いただき、誠にありがとうございます。<br>
+  まだまだ改良の余地がございますので、ぜひ皆さまのご意見・ご感想をお聞かせください。<br>
+  よりよいウェブサイトを目指して、今後も改善を続けていきます。
+</p>
+
+
+   <form action="https://api.staticforms.xyz/submit" method="POST">
+        <input type="hidden" name="accessKey" value="sf_l5j44ilib5mgm4meaic5b15j">
+      <div class="item">
+          <label class="label">お名前</label>
+          <input type="text" class="inputs" name="name" required>
+      </div>
+
+      <div class="item">
+          <label class="label">メールアドレス</label>
+          <input type="email" class="inputs" name="email" required>
+      </div>
+
+      <div class="item">
+          <label class="label">意見</label>
+          <textarea class="inputs" name="message" placeholder="意見はこちら" required></textarea>
+      </div>
+
+      <div class="buutton-area">
+          <input type="submit" value="意見を送信">
+          <input type="reset" value="リセット">
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

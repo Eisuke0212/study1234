@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ペットショップ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>ペットショップ</h1>
+  <p>コイン：<span id="coins">0</span>枚</p>
+  <p>えさ：<span id="food">0</span>個</p>
+  <button onclick="buyFood()">えさを10コインで買う</button>
+  <button onclick="back()">もどる</button>
+
+  <script>
+    const coinEl = document.getElementById('coins');
+    const foodEl = document.getElementById('food');
+
+    function update() {
+      coinEl.textContent = localStorage.getItem('coins') || '0';
+      foodEl.textContent = localStorage.getItem('food') || '0';
+    }
+
+    function buyFood() {
+      let coins = parseInt(localStorage.getItem('coins') || '0');
+      if (coins < 10) return alert('コインが足りません！');
+
+      coins -= 10;
+      let food = parseInt(localStorage.getItem('food') || '0') + 1;
+      localStorage.setItem('coins', coins);
+      localStorage.setItem('food', food);
+      update();
+    }
+
+    function back() {
+      location.href = 'pet.html';
+    }
+
+    update();
+  </script>
+</body>
+</html>

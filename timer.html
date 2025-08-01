@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タイマー勉強</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>タイマー勉強</h1>
+  <p id="subject"></p>
+
+  <label>何分勉強する？</label>
+  <input type="number" id="minutes" min="1" value="15"> 分
+  <button onclick="startTimer()">スタート</button>
+
+  <h2 id="countdown"></h2>
+  <audio id="endSound" src="sound.mp3"></audio>
+
+  <script>
+    const urlParams = new URLSearchParams(location.search);
+    const subject = urlParams.get('subject') || '未設定';
+
+    document.getElementById('subject').textContent = '教科：' + subject;
+
+    let timer;
+    function startTimer() {
+      const min = parseInt(document.getElementById('minutes').value);
+      if (!min || min <= 0) return alert('時間を設定してください');
+
+      let remaining = min * 60;
+      document.getElementById('countdown').textContent = formatTime(remaining);
+
+      timer = setInterval(() => {
+        remaining--;
+        document.getElementById('countdown').textContent = formatTime(remaining);
+        if (remaining <= 0) {
+          clearInterval(timer);
+          alert('おつかれさま！コインを獲得しました！');
+          giveReward(min);
+          document.getElementById('endSound').play();
+        }
+      }, 1000);
+    }
+
+    function giveReward(min) {
+      const coins = parseInt(localStorage.getItem('coins') || '0');
+      localStorage.setItem('coins', coins + min);
+
+      const subjectTime = parseInt(localStorage.getItem(subject + '_time') || '0');
+      localStorage.setItem(subject + '_time', subjectTime + min);
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m + '分' + s + '秒';
+    }
+  </script>
+  
+</body>
+</html>

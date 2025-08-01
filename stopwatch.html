@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ストップウォッチ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>⏱️ ストップウォッチ</h1>
+
+  <h2 id="display">00:00</h2>
+  <button onclick="startStopwatch()">スタート</button>
+  <button onclick="stopStopwatch()">ストップ</button>
+  <button onclick="resetStopwatch()">リセット</button>
+
+  <script>
+    let stopwatchInterval;
+    let totalSeconds = 0;
+    let isRunning = false;
+
+    function updateDisplay() {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      document.getElementById('display').textContent =
+        String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+    }
+
+    function startStopwatch() {
+      if (isRunning) return;
+
+      isRunning = true;
+      stopwatchInterval = setInterval(() => {
+        totalSeconds++;
+        updateDisplay();
+      }, 1000);
+    }
+
+    function stopStopwatch() {
+      if (!isRunning) return;
+
+      isRunning = false;
+      clearInterval(stopwatchInterval);
+
+      // ストップ時にコインを加算（1分＝1コイン）
+      const earnedCoins = Math.floor(totalSeconds / 60);
+      if (earnedCoins > 0) {
+        let coins = parseInt(localStorage.getItem('coins') || 0);
+        coins += earnedCoins;
+        localStorage.setItem('coins', coins);
+        alert(`お疲れさま！${earnedCoins}コイン獲得！`);
+      } else {
+        alert("1分未満ではコインはもらえません！");
+      }
+    }
+
+    function resetStopwatch() {
+      stopStopwatch();
+      totalSeconds = 0;
+      updateDisplay();
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
