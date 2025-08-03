@@ -7,7 +7,7 @@
 </head>
 <body>
   <h1>勉強育成ゲーム</h1>
-  
+
   <p>教科を選んで勉強しよう！</p>
   
   <div class="subjects">
@@ -70,7 +70,9 @@
   </script>
 
   <footer>
-    <a href="question.html"><button onclick="question">問い合わせボタン</button></a>
+    <a href="manual.html"><button onclick="manual">使い方</button></a>
+    <a href="question.html"><button onclick="question">意見BOX
+    </button></a>
   </footer>
 </body>
 </html>
